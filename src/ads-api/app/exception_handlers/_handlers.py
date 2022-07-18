@@ -1,5 +1,5 @@
 """
-    Notes server API exception handlers.
+    Ads server API exception handlers.
     (FastAPI exception handlers)
 """
 
