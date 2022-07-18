@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    target-branch: "main"
+    directory: "/src/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    target-branch: "main"
+    directory: "/src/"
+    schedule:
+      interval: "daily"
