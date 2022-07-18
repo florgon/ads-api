@@ -4,8 +4,6 @@
 """
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
 
 # Settings.
 from .config import get_settings
