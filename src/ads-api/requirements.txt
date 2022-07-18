@@ -1,6 +1,6 @@
 fastapi==0.79.0
 uvicorn==0.17.6
-sqlalchemy==1.4.36
+sqlalchemy==1.4.39
 psycopg2-binary==2.9.3
 
 # Testing.
