@@ -1,0 +1,24 @@
+name: Unit tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unittests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the docker-compose stack
+      working-directory: ./src
+      run: docker-compose up -d
+    - name: Check docker containers
+      working-directory: ./src
+      run: docker ps -a
+    - name: Pytest
+      working-directory: ./src/ads-api/app
+      run: docker exec florgon-ads-api_server_1 pytest .
