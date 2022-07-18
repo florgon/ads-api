@@ -12,9 +12,12 @@ router = APIRouter()
 
 
 @router.get("/ads.getViewBlock")
-async def method_ads_get_view_block(client_id: int = 0, renderer: str = "html") -> HTMLResponse | JSONResponse:
+async def method_ads_get_view_block(client_id: int = 0, renderer: str | None = None) -> HTMLResponse | JSONResponse:
     """Returns HTML/JS/CSS of the view block of the ad. Should be called by JS-library on the client website."""
 
+    if renderer is None:
+        renderer = "html"
+        
     if renderer == "html":
         return ads_view_block_html_renderer(client_id)
     elif renderer == "js":
