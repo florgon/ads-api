@@ -13,9 +13,9 @@ from . import (
 )
 
 
-def register_routes(app: FastAPI) -> None:
+def register_routers(app: FastAPI) -> None:
     """
-    Registers FastAPI routes.
+    Registers FastAPI routers.
     """
     # Routers.
     for router in [utils.router, ads.router]:
