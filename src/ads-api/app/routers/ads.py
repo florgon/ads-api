@@ -3,30 +3,43 @@
     Provides API methods (routes) for working ads.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from app.services.api.response import api_error, api_success, ApiErrorCode
-
+from app.services.request import query_auth_data_from_request
+from app.database import crud
+from app.database.dependencies import get_db, Session
+from app.serializers.ad import serialize_ad
 router = APIRouter()
 
 
+@router.get("/ads.create")
+async def method_ads_create(text: str, req: Request, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
+    """Returns HTML/JS/CSS of the view block of the ad. Should be called by JS-library on the client website."""
+    auth_data = query_auth_data_from_request(req)
+    ad = crud.ad.create(db, owner_id=auth_data.user_id, text=text)
+    if ad:
+      return api_success(serialize_ad(ad, in_list=False))  
+    return api_error(ApiErrorCode.API_UNKNOWN_ERROR, "Failed to create ad.")
+
+
 @router.get("/ads.getViewBlock")
-async def method_ads_get_view_block(renderer: str | None = None) -> HTMLResponse | JSONResponse:
+async def method_ads_get_view_block(req: Request, renderer: str | None = None, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
     """Returns HTML/JS/CSS of the view block of the ad. Should be called by JS-library on the client website."""
 
     if renderer is None:
         renderer = "html"
 
     if renderer == "html":
-        return ads_view_block_html_renderer()
+        return _ads_view_block_html_renderer()
     elif renderer == "js":
-        return ads_view_block_js_renderer()
+        return _ads_view_block_js_renderer()
     else:
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'")
 
 
-def ads_view_block_js_renderer() -> JSONResponse:
+def _ads_view_block_js_renderer() -> JSONResponse:
     return api_success({
         "view_block": {
             "type": "text",
@@ -35,7 +48,7 @@ def ads_view_block_js_renderer() -> JSONResponse:
     })
 
 
-def ads_view_block_html_renderer() -> HTMLResponse:
+def _ads_view_block_html_renderer() -> HTMLResponse:
     return HTMLResponse("""
         <html>
             <head>
