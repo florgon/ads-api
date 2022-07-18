@@ -3,62 +3,48 @@
     Provides API methods (routes) for working ads.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 
+# Etc.
 from app.services.api.response import api_error, api_success, ApiErrorCode
+from app.services.request import query_auth_data_from_request
+from app.serializers.ad import serialize_ad
+
+# Database.
+from app.database import crud
+from app.database.dependencies import get_db, Session
+
+# Renderers.
+from app.renderers.js import ads_view_block_js_renderer
+from app.renderers.html import ads_view_block_html_renderer
 
 router = APIRouter()
 
 
+@router.get("/ads.create")
+async def method_ads_create(text: str, req: Request, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
+    """Returns HTML/JS/CSS of the view block of the ad. Should be called by JS-library on the client website."""
+    auth_data = query_auth_data_from_request(req)
+    ad = crud.ad.create(db, owner_id=auth_data.user_id, text=text)
+    if ad:
+      return api_success(serialize_ad(ad, in_list=False))  
+    return api_error(ApiErrorCode.API_UNKNOWN_ERROR, "Failed to create ad.")
+
+
 @router.get("/ads.getViewBlock")
-async def method_ads_get_view_block(client_id: int = 0, renderer: str = "html") -> HTMLResponse | JSONResponse:
+async def method_ads_get_view_block(req: Request, renderer: str | None = None, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
     """Returns HTML/JS/CSS of the view block of the ad. Should be called by JS-library on the client website."""
 
+    if renderer is None:
+        renderer = "html"
+
+    ad = crud.ad.get_random(db)
+
     if renderer == "html":
-        return ads_view_block_html_renderer(client_id)
+        return ads_view_block_html_renderer(ad=ad)
     elif renderer == "js":
-        return ads_view_block_js_renderer(client_id)
+        return ads_view_block_js_renderer(ad=ad)
     else:
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'")
 
-
-def ads_view_block_js_renderer(client_id: int) -> JSONResponse:
-    if client_id <= 0:
-        return api_error(ApiErrorCode.API_INVALID_REQUEST, "Client_id invalid.", {
-            "view_block": {
-                "type": "text",
-                "data": "Florgon Ads improperly configured! Client_id invalid."
-            }
-        })
-    return api_success({
-        "view_block": {
-            "type": "text",
-            "data": "Welcome to the Florgon Ads."
-        }
-    })
-
-
-def ads_view_block_html_renderer(client_id: int) -> HTMLResponse:
-    if client_id <= 0:
-        return HTMLResponse("""
-            <html>
-                <head>
-                    <style></style>
-                </head>
-                <body>
-                    Florgon Ads improperly configured! Review your client_id.
-                </body>
-            </html>
-        """)
-        
-    return HTMLResponse("""
-        <html>
-            <head>
-                <style></style>
-            </head>
-            <body>
-                Welcome to the Florgon Ads.
-            </body>
-        </html>
-    """)
