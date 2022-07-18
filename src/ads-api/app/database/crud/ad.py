@@ -3,12 +3,11 @@
 """
 
 # Libraries.
-import secrets
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 
 # Services.
 from app.database.models.ad import Ad
-
 
 
 def get_by_id(db: Session, ad_id: int) -> Ad:
@@ -24,6 +23,10 @@ def get_by_owner_id(db: Session, owner_id: int) -> list[Ad]:
 def get_count_by_owner_id(db: Session, owner_id: int) -> int:
     """Returns count of clients by it`s owner ID."""
     return db.query(Ad).filter(Ad.owner_id == owner_id).count()
+
+
+def get_random(db: Session) -> Ad:
+    return db.query(Ad).filter(Ad.is_active == True).order_by(func.random()).limit(1).first()
 
 
 def create(db: Session, owner_id: int, text: str) -> Ad:

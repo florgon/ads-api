@@ -11,6 +11,8 @@ from app.services.request import query_auth_data_from_request
 from app.database import crud
 from app.database.dependencies import get_db, Session
 from app.serializers.ad import serialize_ad
+from app.database.models.ad import Ad
+
 router = APIRouter()
 
 
@@ -31,31 +33,46 @@ async def method_ads_get_view_block(req: Request, renderer: str | None = None, d
     if renderer is None:
         renderer = "html"
 
+    ad = crud.ad.get_random(db)
+
     if renderer == "html":
-        return _ads_view_block_html_renderer()
+        return _ads_view_block_html_renderer(ad=ad)
     elif renderer == "js":
-        return _ads_view_block_js_renderer()
+        return _ads_view_block_js_renderer(ad=ad)
     else:
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'")
 
 
-def _ads_view_block_js_renderer() -> JSONResponse:
+def _ads_view_block_js_renderer(ad: Ad) -> JSONResponse:
+    if not ad:
+        return api_success({
+            "view_block": {
+                "type": "text",
+                "data": "Sorry, no ad was found for you! =("
+            }
+        })
     return api_success({
         "view_block": {
             "type": "text",
-            "data": "Welcome to the Florgon Ads."
+            "data": ad.text
         }
     })
 
 
-def _ads_view_block_html_renderer() -> HTMLResponse:
+def _ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
+    if not ad:
+        ad_text = "Sorry, no ad was found for you! =("
+    else:
+        ad_text = ad.text
     return HTMLResponse("""
         <html>
             <head>
                 <style></style>
             </head>
             <body>
-                Welcome to the Florgon Ads.
+                <span>
+                    {ad_text}
+                </span>
             </body>
         </html>
-    """)
+    """.format(ad_text=ad_text))
