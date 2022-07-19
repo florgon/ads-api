@@ -7,15 +7,28 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
         ad_text = "Sorry, no ad was found for you! =("
     else:
         ad_text = ad.text
+
     return HTMLResponse("""
         <html>
             <head>
-                <style></style>
+                <style>
+                    html, body { 
+                        margin: 0; 
+                        padding: 0; 
+                        width: 100%; 
+                        height: 100%; 
+                    }
+                    a { 
+                        display: block; 
+                        width: 100%; 
+                        height: 100%; 
+                        text-decoration: none; 
+                        color: black;
+                    }
+                </style>
             </head>
             <body>
-                <span>
-                    {ad_text}
-                </span>
+                <a href='https://ads.florgon.space/c?aid={ad_id}'>{ad_text}</a>
             </body>
         </html>
-    """.format(ad_text=ad_text))
+    """.format(ad_id=ad.id, ad_text=ad_text))
