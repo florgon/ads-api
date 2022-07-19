@@ -12,10 +12,7 @@ def serialize(ad: Ad, in_list: bool = False) -> dict:
             "is_active": ad.is_active,
             "is_verified": ad.is_verified,
         },
-        "display": {
-            "type": "text",
-            "data": ad.text
-        },
+        "display": {"type": "text", "data": ad.text},
         "created_at": time.mktime(ad.time_created.timetuple()),
     }
 

@@ -2,18 +2,17 @@ from fastapi.responses import HTMLResponse
 from app.database.models.ad import Ad
 from app.config import get_settings
 
+
 def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
     if not ad:
         html_frame = _get_html_frame(
-            ad_link="#",
-            ad_type="text",
-            ad_data="Sorry, no ad was found for you! =("
+            ad_link="#", ad_type="text", ad_data="Sorry, no ad was found for you! =("
         )
     else:
         html_frame = _get_html_frame(
             ad_link=f"{get_settings().ad_gateway_url}?aid={ad.id}",
             ad_type=ad.type,
-            ad_data=ad.data
+            ad_data=ad.data,
         )
 
     return HTMLResponse(content=html_frame)
@@ -56,5 +55,7 @@ def _get_html_frame(ad_link: str, ad_type: str, ad_data: str):
                 <a href='{ad_link}' target='_blank' rel='opener'>{ad_body}</a>
             </body>
         </html>
-    """.format(css=css, ad_link=ad_link, ad_body=ad_body)
+    """.format(
+        css=css, ad_link=ad_link, ad_body=ad_body
+    )
     return html

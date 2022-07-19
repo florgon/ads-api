@@ -23,18 +23,22 @@ router = APIRouter()
 
 
 @router.get("/ads.create")
-async def method_ads_create(type: str, data: str, link: str, req: Request, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
+async def method_ads_create(
+    type: str, data: str, link: str, req: Request, db: Session = Depends(get_db)
+) -> HTMLResponse | JSONResponse:
     """Creates new ad."""
     auth_data = query_auth_data_from_request(req)
     ad = crud.ad.create(db, owner_id=auth_data.user_id, type=type, data=data, link=link)
     if ad:
-      return api_success(serialize_ad(ad, in_list=False))  
+        return api_success(serialize_ad(ad, in_list=False))
     return api_error(ApiErrorCode.API_UNKNOWN_ERROR, "Failed to create ad.")
 
 
 @router.get("/ads.getViewBlock")
-async def method_ads_get_view_block(req: Request, renderer: str | None = None, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
-    """Returns HTML/JS/CSS of the view block of the ad. """
+async def method_ads_get_view_block(
+    req: Request, renderer: str | None = None, db: Session = Depends(get_db)
+) -> HTMLResponse | JSONResponse:
+    """Returns HTML/JS/CSS of the view block of the ad."""
 
     if renderer is None:
         renderer = "html"
@@ -46,18 +50,23 @@ async def method_ads_get_view_block(req: Request, renderer: str | None = None, d
     elif renderer == "js":
         return ads_view_block_js_renderer(ad=ad)
     else:
-        return api_error(ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'")
+        return api_error(
+            ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'"
+        )
 
 
 @router.get("/ads.clickViewBlock")
-async def method_ads_click_view_block(req: Request, aid: int, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
+async def method_ads_click_view_block(
+    req: Request, aid: int, db: Session = Depends(get_db)
+) -> HTMLResponse | JSONResponse:
     """Process analytics clicks for view block (ad) and redirect client (user) to the target resource page."""
 
     if not aid or aid <= 0:
-         return api_error(ApiErrorCode.API_INVALID_REQUEST, "`aid` param is invalid!")
+        return api_error(ApiErrorCode.API_INVALID_REQUEST, "`aid` param is invalid!")
     ad = crud.ad.get_by_id(db, ad_id=aid)
     if not ad:
-        return api_error(ApiErrorCode.API_INVALID_REQUEST, "Ad with this `aid` does not exist!")
+        return api_error(
+            ApiErrorCode.API_INVALID_REQUEST, "Ad with this `aid` does not exist!"
+        )
 
     return RedirectResponse(url=ad.link, status_code=307, headers=None)
-

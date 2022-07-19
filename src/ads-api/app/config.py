@@ -14,12 +14,13 @@ class Settings(BaseSettings):
     sso_api_method: str
 
     ad_gateway_url = "https://ads.florgon.space/c"
-    
+
     proxy_url_prefix: str
     proxy_url_host: str
 
     fastapi_debug: bool = False
     cors_enabled: bool = True
+
 
 _settings = Settings()
 

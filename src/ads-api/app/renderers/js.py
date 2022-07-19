@@ -16,13 +16,9 @@ def ads_view_block_js_renderer(ad: Ad) -> JSONResponse:
         ad_type = ad.type
         ad_link = f"{get_settings().ad_gateway_url}?aid={ad_id}"
 
-    return api_success({
-        "view_block": {
-            "type": ad_type,
-            "data": ad_data,
-            "link": ad_link
-        },
-        "payload": {
-            "aid": ad_id
+    return api_success(
+        {
+            "view_block": {"type": ad_type, "data": ad_data, "link": ad_link},
+            "payload": {"aid": ad_id},
         }
-    })
+    )
