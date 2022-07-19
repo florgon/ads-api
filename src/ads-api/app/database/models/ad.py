@@ -4,7 +4,7 @@
 
 # ORM.
 from sqlalchemy.sql import func
-from sqlalchemy import Integer, Column, Boolean, DateTime, String
+from sqlalchemy import Integer, Column, Boolean, DateTime, String, Union
 
 # Core model base.
 from app.database.core import Base
@@ -25,8 +25,9 @@ class Ad(Base):
     is_active = Column(Boolean, nullable=False, default=True)
     is_verified = Column(Boolean, nullable=False, default=False)
 
-    # Ad data.
-    text = Column(String, nullable=False)
+    # Ad.
+    type = Column(String(length=16), nullable=False)
+    data = Column(String, nullable=False)
 
     # Times.
     time_created = Column(

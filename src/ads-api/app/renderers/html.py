@@ -25,6 +25,10 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
             color: black;
         }
     """
+    if ad.type == "text":
+        html_body = f"<a href='{ad_link}' target='_blank' rel='opener'>{ad_text}</a>"
+    else:
+        html_body = "unknown ad type."
     html = """
         <html>
             <head>
@@ -33,9 +37,9 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
                 </style>
             </head>
             <body>
-                <a href='{ad_link}' target='_blank' rel='opener'>{ad_text}</a>
+                {html_body}
             </body>
         </html>
     """
-    html = html.format(css=css, ad_link=ad_link, ad_text=ad_text)
+    html = html.format(css=css, html_body=html_body)
     return HTMLResponse(content=html)
