@@ -32,7 +32,7 @@ async def method_ads_create(
     if type not in ("text", "image", "video"):
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "Failed to create ad.")
 
-    ad = crud.ad.create(db, owner_id=auth_data.user_id, type=type, data=data, link=link)
+    ad = crud.ad.create(db, owner_id=auth_data.user_id, ad_type=type, ad_data=data, ad_link=link)
     if ad:
         return api_success(serialize_ad(ad, in_list=False))
     return api_error(ApiErrorCode.API_UNKNOWN_ERROR, "Failed to create ad.")
