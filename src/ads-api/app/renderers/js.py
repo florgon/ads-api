@@ -20,6 +20,6 @@ def ads_view_block_js_renderer(ad: Ad) -> JSONResponse:
             "link": ad_link
         },
         "payload": {
-            "aid": ad.id
+            "aid": ad_id
         }
     })
