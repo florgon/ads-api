@@ -1,6 +1,6 @@
 from fastapi.responses import HTMLResponse
 from app.database.models.ad import Ad
-
+from app.config import get_settings
 
 def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
     if not ad:
@@ -11,7 +11,7 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
         )
     else:
         html_frame = _get_html_frame(
-            ad_link=f"https://ads.florgon.space/c?aid={ad.id}",
+            ad_link=f"{get_settings().ad_gateway_url}?aid={ad.id}",
             ad_type=ad.type,
             ad_data=ad.data
         )

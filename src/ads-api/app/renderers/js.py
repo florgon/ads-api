@@ -1,6 +1,7 @@
 from fastapi.responses import JSONResponse
 from app.database.models.ad import Ad
 from app.services.api.response import api_success
+from app.config import get_settings
 
 
 def ads_view_block_js_renderer(ad: Ad) -> JSONResponse:
@@ -13,7 +14,7 @@ def ads_view_block_js_renderer(ad: Ad) -> JSONResponse:
         ad_id = ad.id
         ad_data = ad.data
         ad_type = ad.type
-        ad_link = f"https://ads.florgon.space/c?aid={ad_id}"
+        ad_link = f"{get_settings().ad_gateway_url}?aid={ad_id}"
 
     return api_success({
         "view_block": {
