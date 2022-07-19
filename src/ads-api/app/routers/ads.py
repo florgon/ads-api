@@ -30,7 +30,7 @@ async def method_ads_create(
     # TODO: type should be renamed.
     auth_data = query_auth_data_from_request(req)
     if type not in ("text", "image", "video"):
-        return api_error(ApiErrorCode.API_INVALID_REQUEST, "Failed to create ad.")
+        return api_error(ApiErrorCode.API_INVALID_REQUEST, "Invalid ad type.")
 
     ad = crud.ad.create(db, owner_id=auth_data.user_id, ad_type=type, ad_data=data, ad_link=link)
     if ad:
