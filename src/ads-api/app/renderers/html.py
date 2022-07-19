@@ -33,7 +33,7 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
                 </style>
             </head>
             <body>
-                <a href='{ad_link}'>{ad_text}</a>
+                <a href='{ad_link}' target='_blank' rel='opener'>{ad_text}</a>
             </body>
         </html>
     """
