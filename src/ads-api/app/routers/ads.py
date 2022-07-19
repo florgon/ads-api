@@ -23,16 +23,15 @@ router = APIRouter()
 
 
 @router.get("/ads.create")
-async def method_ads_create(
-    type: str, data: str, link: str, req: Request, db: Session = Depends(get_db)
+async def method_ads_create(data: str, link: str, req: Request, db: Session = Depends(get_db)
 ) -> HTMLResponse | JSONResponse:
     """Creates new ad."""
-    # TODO: type should be renamed.
+    ad_type = req.query_params.get("type", "")
     auth_data = query_auth_data_from_request(req)
-    if type not in ("text", "image", "video"):
+    if ad_type not in ["text", "image", "video"]:
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "Invalid ad type.")
 
-    ad = crud.ad.create(db, owner_id=auth_data.user_id, ad_type=type, ad_data=data, ad_link=link)
+    ad = crud.ad.create(db, owner_id=auth_data.user_id, ad_type=ad_type, ad_data=data, ad_link=link)
     if ad:
         return api_success(serialize_ad(ad, in_list=False))
     return api_error(ApiErrorCode.API_UNKNOWN_ERROR, "Failed to create ad.")
