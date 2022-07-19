@@ -13,7 +13,8 @@ from . import database
 
 # Setters for custom layers.
 from .middlewares import add_middlewares
-#from .event_handlers import add_event_handlers
+
+# from .event_handlers import add_event_handlers
 from .routers import register_routers
 from .exception_handlers import register_handlers
 
@@ -52,7 +53,7 @@ def _construct_app() -> FastAPI:
     database.core.create_all()
 
     # Register all internal stuff as routers/handlers/middlewares etc.
-    #add_event_handlers(app_instance)
+    # add_event_handlers(app_instance)
     add_middlewares(app_instance)
     register_handlers(app_instance)
     register_routers(app_instance)
