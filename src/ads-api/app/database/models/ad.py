@@ -4,7 +4,7 @@
 
 # ORM.
 from sqlalchemy.sql import func
-from sqlalchemy import Integer, Column, Boolean, DateTime, String, Union
+from sqlalchemy import Integer, Column, Boolean, DateTime, String, Text
 
 # Core model base.
 from app.database.core import Base
@@ -28,6 +28,7 @@ class Ad(Base):
     # Ad.
     type = Column(String(length=16), nullable=False)
     data = Column(String, nullable=False)
+    link = Column(Text, nullable=False)
 
     # Times.
     time_created = Column(

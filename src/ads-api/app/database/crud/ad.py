@@ -29,13 +29,14 @@ def get_random(db: Session) -> Ad:
     return db.query(Ad).filter(Ad.is_active == True).order_by(func.random()).limit(1).first()
 
 
-def create(db: Session, owner_id: int, ad_type: str, ad_data: str) -> Ad:
+def create(db: Session, owner_id: int, ad_type: str, ad_data: str, ad_link: str) -> Ad:
     """Creates Ad"""
 
     # Create new Ad.
     oauth_client = Ad(
         type=ad_type,
         data=ad_data, 
+        link=ad_link,
         owner_id=owner_id
     )
 
