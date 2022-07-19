@@ -4,7 +4,7 @@
 """
 
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
 # Etc.
 from app.services.api.response import api_error, api_success, ApiErrorCode
@@ -48,12 +48,16 @@ async def method_ads_get_view_block(req: Request, renderer: str | None = None, d
     else:
         return api_error(ApiErrorCode.API_INVALID_REQUEST, "renderer must be 'html' or 'js'")
 
+
 @router.get("/ads.clickViewBlock")
 async def method_ads_click_view_block(req: Request, aid: int, db: Session = Depends(get_db)) -> HTMLResponse | JSONResponse:
     """Process analytics clicks for view block (ad) and redirect client (user) to the target resource page."""
 
     if not aid or aid <= 0:
-         return api_error(ApiErrorCode.API_INVALID_REQUEST, "aid param is invalid!")
+         return api_error(ApiErrorCode.API_INVALID_REQUEST, "`aid` param is invalid!")
+    ad = crud.ad.get_by_id(db, ad_id=aid)
+    if not ad:
+        return api_error(ApiErrorCode.API_INVALID_REQUEST, "Ad with this `aid` does not exist!")
 
-    return api_error(ApiErrorCode.API_NOT_IMPLEMENTED, "Method not implemented yet!")
+    return RedirectResponse(url=ad.link, status_code=307, headers=None)
 

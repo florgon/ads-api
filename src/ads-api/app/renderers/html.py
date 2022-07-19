@@ -18,8 +18,9 @@ def ads_view_block_html_renderer(ad: Ad) -> HTMLResponse:
 
     return HTMLResponse(content=html_frame)
 
+
 def _get_html_frame(ad_link: str, ad_type: str, ad_data: str):
-    
+
     if ad_type == "text":
         ad_body = f"<span>{ad_data}<span/>"
     elif ad_type == "image":
