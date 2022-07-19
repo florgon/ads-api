@@ -30,7 +30,7 @@ def _get_html_frame(ad_link: str, ad_type: str, ad_data: str):
         ad_body = "Unknown ad type."
 
     css = """
-        html, body { 
+        html, body, img { 
             margin: 0; 
             padding: 0; 
             width: 100%; 
