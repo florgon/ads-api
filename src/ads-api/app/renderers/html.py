@@ -23,9 +23,9 @@ def _get_html_frame(ad_link: str, ad_type: str, ad_data: str):
     if ad_type == "text":
         ad_body = f"<span>{ad_data}<span/>"
     elif ad_type == "image":
-        ad_body = "Unsupported ad type."
+        ad_body = f"<img src='{ad_data}'>Browser not compatible with this ad.</img>"
     elif ad_type == "video":
-        ad_body = "Unsupported ad type."
+        ad_body = f"<video src='{ad_data}'>Browser not compatible with this ad.</video>"
     else:
         ad_body = "Unknown ad type."
 
